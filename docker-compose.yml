@@ -1,0 +1,4 @@
+- name: Deploy AWX using Docker Compose
+  command: docker-compose -f /opt/awx/installer/docker-compose.yml up -d
+  args:
+    chdir: /opt/awx/installer

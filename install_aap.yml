@@ -1,0 +1,40 @@
+---
+- name: Install Ansible Automation Platform (Community Edition) on Red Hat 7 server
+  hosts: redhat7_server
+  become: yes
+  tasks:
+    - name: Ensure EPEL repository is enabled
+      yum_repository:
+        name: epel
+        description: EPEL YUM repo
+        baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+        gpgcheck: yes
+        gpgkey: https://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-$releasever
+        enabled: yes
+      when: ansible_distribution == "RedHat" and ansible_distribution_major_version|int == 7
+
+    - name: Install the required packages
+      package:
+        name:
+          - python3-pip
+          - python3-devel
+          - gcc
+        state: present
+
+    - name: Upgrade pip
+      pip:
+        name: pip
+        state: latest
+        executable: pip3
+
+    - name: Install Ansible
+      pip:
+        name: ansible-core
+        state: latest
+        executable: pip3
+
+    - name: Install Ansible Tower CLI
+      pip:
+        name: ansible-tower-cli
+        state: latest
+        executable: pip3

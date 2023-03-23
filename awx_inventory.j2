@@ -1,0 +1,8 @@
+---
+postgres_data_dir: "{{ '/opt/awx/pgdocker' }}"
+docker_compose_dir: "{{ '/opt/awx/installer' }}"
+awx_official: true
+awx_alternate_dns_servers: "8.8.8.8,8.8.4.4"
+project_data_dir: "{{ '/opt/awx/projects' }}"
+awx_secret_key: "{{ awx_secret_key }}"
+awx_admin_password: "{{ awx_admin_password }}"

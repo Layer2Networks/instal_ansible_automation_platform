@@ -1,0 +1,44 @@
+---
+- name: Install AWX on Red Hat 7 server
+  hosts: redhat7_server
+  become: yes
+  tasks:
+    - name: Install required packages
+      package:
+        name:
+          - git
+          - python3-pip
+        state: present
+
+    - name: Clone the AWX repository
+      git:
+        repo: https://github.com/ansible/awx.git
+        dest: /opt/awx
+        version: 19.4.0
+
+    - name: Ensure /opt/awx/installer directory exists
+      ansible.builtin.file:
+        path: /opt/awx/installer
+        state: directory
+
+    - name: Create the Docker Compose configuration
+      template:
+        src: /root/instal_ansible_automation_platform/awx_inventory.j2
+        dest: /opt/awx/installer/inventory
+        mode: 0644
+        force: no
+      vars:
+        awx_secret_key: "C/fb+S/UFPQw8KuF45W/+euo4bm4PWxgpn8P53j0YHY="
+        awx_admin_password: "rg4t3qCiy7N7FGWY"
+
+    - name: Copy docker-compose.yml to /opt/awx/installer
+      ansible.builtin.copy:
+        src: /root/instal_ansible_automation_platform/docker-compose.yml
+        dest: /opt/awx/installer/docker-compose.yml
+        mode: 0644
+        force: yes
+
+    - name: Deploy AWX using Docker Compose
+      command: docker-compose -f /opt/awx/installer/docker-compose.yml up -d
+      args:
+        chdir: /opt/awx/installer
